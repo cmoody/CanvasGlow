@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title></title>
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<script src="js/Stats.js"></script>
+		<style>
+			body {
+				background-color: #000;
+			}
+		</style>
+		<script>
+				// Animation variables
+				var base = new Image();
+				var glow = new Image();
+				var ctx;
+				var direction = 1;
+				var i = 1;
+				var alphaControl = 10;
+				window.requestAnimFrame = (function(){
+					 return  window.requestAnimationFrame       || 
+							  window.webkitRequestAnimationFrame || 
+							  window.mozRequestAnimationFrame    || 
+							  window.oRequestAnimationFrame      || 
+							  window.msRequestAnimationFrame     || 
+					function( callback ){
+						window.setTimeout(callback, 1000 / 60);
+					};
+				})();
+							
+				function init() {
+					ctx = document.getElementById('glow').getContext('2d');
+					// Create new bgCanvas = document.createElement('canvas');
+					// Then append the canvas element behind current element
+					base.src = 'img/intro-bike-base.png';
+					glow.src = 'img/intro-bike-glow.png';
+					draw();
+				}
+				
+				function clear() {
+					ctx.clearRect(0, 0, 1300, 546);
+				}
+				
+				function draw() {
+					ctx.globalCompositeOperation = 'destination-over';
+					
+					animate(i);
+					if(direction === 1) {
+						++i;
+						if(i === alphaControl) {
+							direction = 0;
+						}
+					}else if(direction === 0) {
+						--i;
+						if(i === 0) {
+							direction = 1;
+						}
+					}
+					
+					ctx.drawImage(base, 0,0,1300,546);
+					requestAnimFrame(draw);
+				}
+				
+				function animate(o) {
+					clear();
+					ctx.save();
+					ctx.globalAlpha = o / 10;
+					ctx.drawImage(glow,0,0,1300,546);
+					ctx.restore();
+				}
+		</script>
+	</head>
+	<body onload="init();">
+		<canvas id="glow" width="1300" height="546">
+			<img src="intro-bike-base.png" width="1300" height="546" alt=""/>  
+		</canvas>
+		<script>
+			
+			var stats = new Stats();
+
+			// Align top-left
+			stats.getDomElement().style.position = 'absolute';
+			stats.getDomElement().style.left = '0px';
+			stats.getDomElement().style.top = '0px';
+
+			document.body.appendChild( stats.getDomElement() );
+
+			setInterval( function () {
+
+				stats.update();
+
+			}, 1000 / 60 );
+		</script>
+		<!--
+			// Framerate variables
+				var drawInterval = 100;
+				var frameCount = 0;
+				var fps = 0;
+				var maxfps = 1 / (drawInterval / 1000);
+				var lastTime = new Date();
+				
+				function framerate() {
+					ctx.fillStyle = '#fff';
+					ctx.font = 'bold 30px arial';
+					ctx.textBaseline = 'top';
+					ctx.fillText(i, 0,0);
+				}
+		-->
+	</body>
+</html>
